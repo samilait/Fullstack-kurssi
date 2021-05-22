@@ -1,0 +1,13 @@
+note over selain:
+selain lähettää datan "jotain" JSON-muodossa POST pyynnön mukana
+palvelimelle, ja renderöi uuden muistiinpanon näytölle
+end note
+
+note over palvelin:
+palvelin lisää "jotain" muistiinpanon notes -listaan
+end note
+
+selain -> palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+
+

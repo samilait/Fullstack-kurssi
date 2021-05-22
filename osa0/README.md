@@ -7,4 +7,4 @@
 ![Single Page App](https://github.com/samilait/Fullstack-kurssi/blob/main/osa0/sekvenssi2.png)
 
 ## 0.6: Uusi muistiinpano (SPA)
-![uusi muistiinpano SPA](https://github.com/samilait/Fullstack-kurssi/blob/main/osa0/sekvenssi1.png)
+![uusi muistiinpano SPA](https://github.com/samilait/Fullstack-kurssi/blob/main/osa0/sekvenssi3.png)

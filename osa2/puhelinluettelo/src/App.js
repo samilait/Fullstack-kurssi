@@ -1,5 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/Persons'
+import './index.css'
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='notification'>
+      {message}
+    </div>
+  )
+}
+
+const ErrorNotification = ({ errorMessage }) => {
+  if (errorMessage === null) {
+    return null
+  }
+
+  return (
+    <div className='errornotification'>
+      {errorMessage}
+    </div>
+  )
+}
 
 const Filter = ({handleNameSearch}) => {
   return (
@@ -47,6 +72,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -71,7 +98,13 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setFilteredPersons(persons.concat(returnedPerson))
+
+          setMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000)
         })
+            
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const updatePerson = persons.filter(person => person.name.toLowerCase().includes(newName.toLowerCase()))[0]
@@ -82,6 +115,20 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
             setFilteredPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+
+            setMessage(`Number replaced for ${newName}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
+  
+          })
+          .catch(error => {
+            setErrorMessage(`Information on ${changedPerson.name} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 3000)
+            setPersons(persons.filter(person => person.id !== changedPerson.id))
+            setFilteredPersons(persons.filter(person => person.id !== changedPerson.id))
           })
       }
     }
@@ -91,6 +138,7 @@ const App = () => {
   }
 
   const removePerson = (id) => {
+    const rmPerson = persons.filter(person => person.id === id)[0]
     personService
       .remove(id)
       .then(() => {
@@ -99,6 +147,12 @@ const App = () => {
           .then(initialPersons => {
             setPersons(initialPersons)
             setFilteredPersons(initialPersons)
+
+            setMessage(`Removed ${rmPerson.name}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 3000)
+
           })      
       })
   }
@@ -114,7 +168,6 @@ const App = () => {
   const nameIncluded = () => {
     const names = persons.map(person => person.name)
     if (names.includes(newName)) {
-      // window.alert(`${newName} is already added to phonebook`)
       return true
     }
     return false
@@ -130,6 +183,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
+      <ErrorNotification errorMessage={errorMessage} />
       <Filter handleNameSearch={handleNameSearch} />
       <h3>Add a new</h3>
       <PersonForm addPerson={addPerson} 
